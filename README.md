@@ -18,6 +18,14 @@
 * Go 1.10+
 * git
 
+### 0、下载源码
+```linux
+ [root@lidi home]# git clone https://github.com/m-sql/msql.git
+  Cloning into 'msql'...
+  remote: Enumerating objects: 26, done.
+  remote: Counting objects: 100% (26/26), done.
+  remote: Compressing objects: 100% (21/21), done.
+```
 ### 1、linux下执行php
 ``` linux
 cd mysql
@@ -60,9 +68,9 @@ use it!
 |_| |_|_|  |_| |_| |_|____/ \__\_\_____|
 参数说明：
 -q : sql 语句 （例如: select * from user）
--d : dns 配置 （例如: "@/database" eg: msql -d "@/LuckLi"）
+-d : dns 配置 （例如: "@/database" eg: msql -d "@/LuckLi" 修改数据库及Host"host/database" eg: msql -d "127.0.0.1/LuckLi"）
 -h : help something
-
+-e : show explain 解析
 ```
 ##### II::检测数据库
 ```
