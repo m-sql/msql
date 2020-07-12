@@ -118,7 +118,7 @@ EOL;
 //---------------------------------------------------------------------------------------------------------------------
 if (isset(array_flip($param_arr)['-p'])){
     $p_key   = array_flip($param_arr)['-p'];
-    $p_value = $param_arr[$p_key+1];
+    $p_value = isset($param_arr[$p_key+1]) ? $param_arr[$p_key+1] : false;
     $path    = $p_value ? $p_value : './';
     $o          = '2>&1';
     $tree       = 'tree';
@@ -132,7 +132,7 @@ if (isset(array_flip($param_arr)['-p'])){
 
     //2、解析.msql.log
     $nameArray = [];
-    array_map(function ($str) use (&$name_array) {
+    array_map(function ($str) use (&$nameArray) {
         preg_match('/(\w+)(.*)(.msql.log)/i', $str, $matchStr);
         if (isset($matchStr[0])) {
             $nameArray[] = $matchStr[0];
@@ -140,13 +140,26 @@ if (isset(array_flip($param_arr)['-p'])){
     }, $respondArr);
 
     //3、开始html转换
-    $path       = rtrim('/', $path) . '/';
+    if ($path != './') {
+        $path       = explode('/',$path);
+        $pathStr    = '/';
+        foreach ($path as $pathTmpStr) {
+            if ($pathTmpStr) {
+                $pathStr .= $pathTmpStr . '/';
+            }
+        }
+        $path = $pathStr;
+    }
     if (!is_dir($path.$newDir)) {
         @mkdir($path.$newDir, 0755, true);
     }
     foreach ($nameArray as $item) {
         $mReport = 'soar -report-type md2html';
-        @`cat {$path.$item} | {$mReport} > {$path.$newDir.$item}`;
+        $reportLogFile  = $path.$item;
+        $reportHtmlFile = $path.$newDir.$item . '.html';
+        if (is_file($reportLogFile)) {
+            @`cat {$reportLogFile} | {$mReport} > {$reportHtmlFile}`;
+        }
     }
     $str =  'Good, It works!';
     echo $str.PHP_EOL;
