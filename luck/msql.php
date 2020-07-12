@@ -97,7 +97,7 @@ EOL;
 //---------------------------------------------------------------------------------------------------------------------
 if (isset(array_flip($param_arr)['-v'])){
     echo $mSQL;
-echo <<<EOL
+    echo <<<EOL
 数据库地址 ： {$addR}
 
 数据库名称 ： {$dbName}
@@ -108,7 +108,49 @@ echo <<<EOL
 .
 
 EOL;
-die;
+    die;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * 文档转换：msql -p
+ */
+//---------------------------------------------------------------------------------------------------------------------
+if (isset(array_flip($param_arr)['-p'])){
+    $p_key   = array_flip($param_arr)['-p'];
+    $p_value = $param_arr[$p_key+1];
+    $path    = $p_value ? $p_value : './';
+    $o          = '2>&1';
+    $tree       = 'tree';
+    $level      = '-L 1';
+    $newDir     = 'sql_score_html/';
+
+    //1、执行扫描
+    $tree = $tree . ' ' . $path . ' '. $level . ' ' . $o;
+    $respond = `$tree`;
+    $respondArr = explode('-- ',$respond);
+
+    //2、解析.msql.log
+    $nameArray = [];
+    array_map(function ($str) use (&$name_array) {
+        preg_match('/(\w+)(.*)(.msql.log)/i', $str, $matchStr);
+        if (isset($matchStr[0])) {
+            $nameArray[] = $matchStr[0];
+        }
+    }, $respondArr);
+
+    //3、开始html转换
+    $path       = rtrim('/', $path) . '/';
+    if (!is_dir($path.$newDir)) {
+        @mkdir($path.$newDir, 0755, true);
+    }
+    foreach ($nameArray as $item) {
+        $mReport = 'soar -report-type md2html';
+        @`cat {$path.$item} | {$mReport} > {$path.$newDir.$item}`;
+    }
+    $str =  'Good, It works!';
+    echo $str.PHP_EOL;
+    die;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -125,7 +167,9 @@ if (isset(array_flip($param_arr)['-h'])) {
 
 -d : DNS   配置 （例如: 只修改数据库"@/database" eg: msql -d "@/LuckLi"; 修改数据库及Host"host/database" eg: msql -d "127.0.0.1/LuckLi"）
 
--v : DBA   参数信息
+-p : log2html 文档转换
+
+-v : DBA   参数信息 （例如:  msql -p /tmp ）
 
 -h : help something
 
@@ -154,7 +198,7 @@ if (isset(array_flip($param_arr)['-d'])) {
 .
 
 EOL;
-    die;
+        die;
     }
     /**
      * 执行dns设置
@@ -254,7 +298,7 @@ if (!isset(array_flip($param_arr)['-q'])) {
 .
 
 EOL;
-die;
+    die;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -276,7 +320,7 @@ if (isset(array_flip($param_arr)['-q'])) {
 .
 
 EOL;
-    die;
+        die;
     }
     /**
      * 执行sql优化
