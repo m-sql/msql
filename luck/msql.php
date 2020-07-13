@@ -220,23 +220,25 @@ EOL;
         $database = explode('/',$d_value)[1];
         $db_host  = explode('/',$d_value)[0];
         if ($db_host == '@') {
-            $db_host = $addR;
+            $db_host = trim($addR);
         }
         $myfile   = fopen($yamFile, "w") or die("Unable to open file! The file path is {$yamFile}" . PHP_EOL);
+        $pwd      = trim($pwd);
+        $pwd      = trim($pwd,'\'');
         $yamL = <<<eol
 # 线上环境配置
 online-dsn:
   addr: {$db_host}:3306
   schema: {$database}
   user: root
-  password: ''
+  password: '{$pwd}'
   disable: false
 # 测试环境配置
 test-dsn:
   addr: {$db_host}:3306
   schema: {$database}
   user: root
-  password: ''
+  password: '{$pwd}'
   disable: false
 # 是否允许测试环境与线上环境配置相同
 allow-online-as-test: true
