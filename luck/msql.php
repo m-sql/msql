@@ -252,7 +252,7 @@ sampling: false
 log-level: 7
 log-output: /dev/null
 # 优化建议输出格式
-report-type: markdown
+report-type: html
 ignore-rules:
 - ""
 # 黑名单中的 SQL 将不会给评审意见。一行一条 SQL，可以是正则也可以是指纹，填写指纹时注意问号需要加反斜线转义。
