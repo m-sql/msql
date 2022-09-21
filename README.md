@@ -1,4 +1,4 @@
-#  mSQL (my mysql)
+#  mSQL (my mysql score)
 
 ## 是一个对SQL进行优化和改写的自动化工具。
 
